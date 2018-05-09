@@ -18,11 +18,6 @@
 #
 #####
 
-param
-(
-    [switch]$SkipStatusCheck
-)
-
 # Get the on-premise credentials for domain administrator and perform the key rollover
 #
 function DoKerberosRollover
