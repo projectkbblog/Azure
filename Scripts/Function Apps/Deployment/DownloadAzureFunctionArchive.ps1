@@ -1,19 +1,18 @@
 ﻿##########
 #
-# Script that can be used for the deployment of function apps from the ZIP file export. The script is based on the process documented at: https://docs.microsoft.com/en-us/azure/azure-functions/deployment-zip-push
+# Script that can be used to download a function app to an app content ZIP file (as per https://github.com/MicrosoftDocs/azure-docs/blob/master/articles/azure-functions/deployment-zip-push.md)
 #
 # Pre-requisites: 
-#   - The function must already exist, and the Function App name be known (e.g. https://myfunctionapp.azurewebsites.net - the name would be myfunctionapp)
+#   - The function must already exist have already been deployed.
 #   - Deployment credentials are required, these can be created on the target function under Platform features -> Deployment credentials.
-#   - The zip file export of the function is required. (If migrating between environments the file can be exported via Function Overview -> Download app content.)
 #
 # Parameters (all mandatory):
 #   - FunctionAppName    - the name of the function app (e.g. if the URL is https://myfunctionapp.azurewebsites.net the function app name is myfunctionapp)
 #   - DeploymentUsername - the deployment credential username (the script will prompt for the password)
-#   - DeploymentZipFile  - the zip file to deploy to the function app
+#   - SaveTo             - the location to save the app content ZIP file to (e.g. C:\backup\myfunctionapp.zip)
 #
 # Sample Usage:
-#   DeployFunctionFromZip.ps1 -FunctionAppName "myfunctionapp" -DeploymentUsername "functionappdeploy" -DeploymentZipFile "C:\backup\myapp.zip"
+#   DownloadAzureFunctionArchive.ps1 -FunctionAppName "myfunctionapp" -DeploymentUsername "functionappdeploy" -SaveTo "C:\backup\myapp.zip"
 #
 # Author: Andrew Silcock
 # Date Created: 29-Aug-2018
@@ -28,9 +27,9 @@ param
     [Parameter(Mandatory=$true)]
     [string] $DeploymentUsername,
     [Parameter(Mandatory=$true)]
-    [string] $DeploymentZipFile
+    [string] $SaveTo
 )
-
+                                                
 
 # Display a Yes/No propmt to the user and return $true if they entered Y or $false otherwise
 #
@@ -63,28 +62,12 @@ $PasswordSecure = Read-Host -Prompt "Enter the deployment password" -AsSecureStr
 $base64AuthInfo = [Convert]::ToBase64String([Text.Encoding]::ASCII.GetBytes(("{0}:{1}" -f $DeploymentUsername, (ConvertSecureStringToPlainText -securestring $PasswordSecure))))
 
 # Deployment URL
-$apiUrl = ("https://{0}.scm.azurewebsites.net/api/zipdeploy" -f $FunctionAppName)
+$apiUrl = ("https://{0}.scm.azurewebsites.net/api/zip/site/wwwroot/" -f $FunctionAppName)
 
 # Prompt as to whether the script should continue or not
 #
 ""
-Write-Output ("This will deploy the file '{0}' `n`tto the function app '{1}'" -f $DeploymentZipFile, $FunctionAppName)
-"`nThis may take several minutes depending on the size of the zip file being deployed`n"
+Write-Output ("This will download the deployment file for the Function app {0}" -f $FunctionAppName)
 
-if (ShouldContinue)
-{
-    # Perform the deployment
-    try
-    {
-        Invoke-RestMethod -Uri $apiUrl -Headers @{Authorization=("Basic {0}" -f $base64AuthInfo)} -UserAgent "powershell/1.0" -Method POST -InFile $DeploymentZipFile -ContentType "multipart/form-data"
-        "Deployment completed"
-    }
-    catch
-    {
-
-    }
-}
-else
-{
-    "No action has been taken"
-}
+# Download the zip
+$response = Invoke-RestMethod -Uri $apiUrl -Headers @{Authorization=("Basic {0}" -f $base64AuthInfo)} -UserAgent "powershell/1.0" -Method GET -ContentType "application/zip" -OutFile $SaveTo
