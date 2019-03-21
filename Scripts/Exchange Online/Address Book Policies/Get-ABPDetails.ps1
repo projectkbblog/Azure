@@ -12,17 +12,19 @@
 #
 # Sample Usage:
 #    1.  Get a summary of the Address Book Policy configuration (not providing a PSCredential)
-#     - ABPDetails.ps1 -AddressBookPolicy "Corporate Address Book Policy"
+#     - Get-ABPDetails.ps1 -AddressBookPolicy "Corporate Address Book Policy"
 #
 #    2.  Get a summary of the Address Book Policy configuration (providing a PSCredential object that has previously been created)
-#     - ABPDetails.ps1 -AddressBookPolicy "Corporate Address Book Policy" -Credential $Credential
+#     - Get-ABPDetails.ps1 -AddressBookPolicy "Corporate Address Book Policy" -Credential $Credential
 #  
 #    3.  Get a detailed summary of the Address Book Policy configuration (not providing a PSCredential)
-#     - ABPDetails.ps1 -AddressBookPolicy "Corporate Address Book Policy" -Detailed
+#     - Get-ABPDetails.ps1 -AddressBookPolicy "Corporate Address Book Policy" -Detailed
 #
 # Author: Andrew Silcock
 # Date Created: 21-Feb-2019
 # Version: 1.0
+#
+# Version 1.1 - 21-Mar-2019 - rename the script from ABPDetails.ps1 to Get-ABPDetails.ps1
 #
 #####
 
