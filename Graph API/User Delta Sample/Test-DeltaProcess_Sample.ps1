@@ -73,6 +73,9 @@ function GetInitialQueryURL
     return $InitialQueryURL
 }
 
+# Import the System.Web assembly so the HttpUtility is available
+Add-Type -AssemblyName System.Web
+
 # File to save the Delta Link to
 #
 $DeltaFile = "C:\Scripts\GraphAPI_Delta\deltaLink.json"
@@ -81,7 +84,7 @@ $DeltaFile = "C:\Scripts\GraphAPI_Delta\deltaLink.json"
 #
 $ClientID = ""  # Replace with the Application ID of the Azure Applicate
 $Secret = ""    # Replace with the key for the application
-$TenantID = ""  # replace with the tenant ID for the Azure AD tenancy
+$TenantID = "" # replace with the tenant ID for the Azure AD tenancy
 
 try
 {
