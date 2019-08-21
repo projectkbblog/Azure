@@ -3,6 +3,6 @@ It will
   A - If the user doesnt have an email address utilise the default proxy address rule. (this is to ensure no processing errors in the unlikely case of data issues)
   B - If the user has an email address  
        1 - Convert the primary proxy address to a non-primary (changing SMTP to smtp)
-	   2 - insert a new primary proxy address using their email suffix and a hard coded suffix
+	   2 - insert a new primary proxy address using their email prefix and a hard coded suffix
 
 IIF(IsPresent([mail]), RemoveDuplicates(Split((Join(Replace(Trim(ImportedValue("proxyAddresses")), "SMTP:","smtp:"), ",") & ",SMTP:"&Left([mail], InStr([mail], "@")-1)&"@differentcompany.com"), ",")), RemoveDuplicates(Trim(ImportedValue("proxyAddresses"))))
